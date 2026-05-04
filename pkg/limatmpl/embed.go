@@ -58,6 +58,7 @@ func (tmpl *Template) embedAllBases(ctx context.Context, embedAll, defaultBase b
 			tmpl.expr.WriteString("| ($a.base | select(type == \"!!str\")) |= [\"\" + .]\n")
 			tmpl.expr.WriteString("| ($a.base | select(type == \"!!map\")) |= [[] + .]\n")
 			// prepend base template at the beginning of the list
+			// TODO: not to modify
 			fmt.Fprintf(&tmpl.expr, "| $a.base = [%q, $a.base[]]\n", defaultBaseFilename)
 			if err := tmpl.evalExpr(); err != nil {
 				return err

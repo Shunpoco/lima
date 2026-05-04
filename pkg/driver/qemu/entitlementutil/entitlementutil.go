@@ -34,7 +34,7 @@ func IsSigned(ctx context.Context, qExe string) error {
 		return fmt.Errorf("failed to run %v: %w (out=%q)", cmd.Args, err, string(out))
 	}
 	if !strings.Contains(string(out), "com.apple.security.hypervisor") {
-		return fmt.Errorf("binary %q seems signed but lacking the \"com.apple.security.hypervisor\" entitlement", qExe)
+		return fmt.Errorf("binary %q seems signed but lacking the `com.apple.security.hypervisor` entitlement", qExe)
 	}
 	return nil
 }
@@ -85,13 +85,13 @@ func isColimaWrapper__useThisFunctionOnlyForPrintingHints__(qExe string) bool {
 // https://github.com/lima-vm/lima/issues/1742
 func AskToSignIfNotSignedProperly(ctx context.Context, qExe string) {
 	if isSignedErr := IsSigned(ctx, qExe); isSignedErr != nil {
-		logrus.WithError(isSignedErr).Warnf("QEMU binary %q does not seem properly signed with the \"com.apple.security.hypervisor\" entitlement", qExe)
+		logrus.WithError(isSignedErr).Warnf("QEMU binary %q does not seem properly signed with the `com.apple.security.hypervisor` entitlement", qExe)
 		if isColimaWrapper__useThisFunctionOnlyForPrintingHints__(qExe) {
 			logrus.Info("Hint: the warning above is usually negligible for colima ( Printed due to https://github.com/abiosoft/colima/issues/796 )")
 		}
 		var ans bool
 		if isatty.IsTerminal(os.Stdout.Fd()) || isatty.IsCygwinTerminal(os.Stdout.Fd()) {
-			message := fmt.Sprintf("Try to sign %q with the \"com.apple.security.hypervisor\" entitlement?", qExe)
+			message := fmt.Sprintf("Try to sign %q with the `com.apple.security.hypervisor` entitlement?", qExe)
 			var askErr error
 			ans, askErr = uiutil.Confirm(message, true)
 			if askErr != nil {
@@ -102,10 +102,10 @@ func AskToSignIfNotSignedProperly(ctx context.Context, qExe string) {
 			if signErr := Sign(ctx, qExe); signErr != nil {
 				logrus.WithError(signErr).Warnf("Failed to sign %q", qExe)
 			} else {
-				logrus.Infof("Successfully signed %q with the \"com.apple.security.hypervisor\" entitlement", qExe)
+				logrus.Infof("Successfully signed %q with the `com.apple.security.hypervisor` entitlement", qExe)
 			}
 		} else {
-			logrus.Warn("If QEMU does not start up, you may have to sign the QEMU binary with the \"com.apple.security.hypervisor\" entitlement manually. See https://github.com/lima-vm/lima/issues/1742 .")
+			logrus.Warn("If QEMU does not start up, you may have to sign the QEMU binary with the `com.apple.security.hypervisor` entitlement manually. See https://github.com/lima-vm/lima/issues/1742 .")
 		}
 	}
 }

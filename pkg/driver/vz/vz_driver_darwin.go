@@ -324,13 +324,13 @@ func validateConfig(_ context.Context, cfg *limatype.LimaYAML) error {
 	case "":
 	case "vz", "default", "none":
 	default:
-		logrus.Warnf("field `audio.device` must be \"vz\", \"default\", or \"none\" for VZ driver, got %q", audioDevice)
+		logrus.Warnf("field `audio.device` must be `vz`, `default`, or `none` for VZ driver, got %q", audioDevice)
 	}
 
 	switch videoDisplay := *cfg.Video.Display; videoDisplay {
 	case "vz", "default", "none":
 	default:
-		logrus.Warnf("field `video.display` must be \"vz\", \"default\", or \"none\" for VZ driver , got %q", videoDisplay)
+		logrus.Warnf("field `video.display` must be `vz`, `default`, or `none` for VZ driver , got %q", videoDisplay)
 	}
 	var vzOpts limatype.VZOpts
 	if err := limayaml.Convert(cfg.VMOpts[limatype.VZ], &vzOpts, "vmOpts.vz"); err != nil {

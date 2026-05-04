@@ -118,7 +118,7 @@ func canGetServices(ctx context.Context, kubectl, kubeconfig string) error {
 		return fmt.Errorf("failed to run %v: %w; stdout=%q, stderr=%q", cmd.Args, err, stdout.String(), stderr.String())
 	}
 	if strings.TrimSpace(stdout.String()) != "yes" {
-		return fmt.Errorf("failed to run %v: expected \"yes\", got %q", cmd.Args, stdout.String())
+		return fmt.Errorf("failed to run %v: expected `yes`, got %q", cmd.Args, stdout.String())
 	}
 	return nil
 }

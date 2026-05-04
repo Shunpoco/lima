@@ -1215,7 +1215,7 @@ func getFirmware(qemuExe string, arch limatype.Arch) (string, error) {
 		return "", fmt.Errorf("could not find firmware for %q (hint: try setting `firmware.legacyBIOS` to `true`)", arch)
 	}
 	qemuArch := strings.TrimPrefix(filepath.Base(qemuExe), "qemu-system-")
-	return "", fmt.Errorf("could not find firmware for %q (hint: try copying the \"edk-%s-code.fd\" firmware to $HOME/.local/share/qemu/)", arch, qemuArch)
+	return "", fmt.Errorf("could not find firmware for %q (hint: try copying the `edk-%s-code.fd` firmware to $HOME/.local/share/qemu/)", arch, qemuArch)
 }
 
 func getFirmwareVars(qemuExe string, arch limatype.Arch) (string, error) {
