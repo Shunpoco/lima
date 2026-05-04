@@ -16,6 +16,15 @@ update_fuse_conf() {
 			echo "user_allow_other" >>"${fuse_conf}"
 		fi
 	fi
+
+	# Some distribution like Ubuntu-25.10 has an apparmor rule for fusermount3. It causes SSHFS mount failed.
+	if [ -e "/etc/apparmor.d/fusermount3" ]; then
+		cat > "/etc/apparmor.d/local/fusermount3" << EOF
+mount fstype=@{fuse_types} options=(nosuid,nodev) options in (ro,rw,noatime,dirsync,nodiratime,noexec,sync) -> @{HOME},
+umount @{HOME},
+EOF
+		apparmor_parser -r /etc/apparmor.d/fusermount3
+	fi
 }
 
 # update_fuse_conf has to be called after installing all the packages,

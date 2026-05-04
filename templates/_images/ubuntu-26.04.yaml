@@ -1,0 +1,4 @@
+images:
+- location: "https://cloud-images.ubuntu.com/resolute/20260421/resolute-server-cloudimg-amd64.img"
+  arch: "x86_64"
+  digest: "sha256:8ed228c9f08a50122fa72307623d9f88d9209ba26e7e849edd584fa675e34863"
