@@ -347,7 +347,7 @@ minimumLimaVersion: 2.0.0
 # 🟢 Builtin default: no base template
 # 🔵 This file: Ubuntu images and default mount points
 base:
-- template:_images/ubuntu-26.04
+- template:_images/ubuntu-25.10
 - template:_default/mounts
 
 # User to be used inside the VM

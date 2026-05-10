@@ -26,6 +26,7 @@ expected="$(cat "$hometmp/random")"
 got="$(limactl shell "$NAME" cat "$hometmpguest/random")"
 INFO "$hometmp/random: expected=${expected}, got=${got}"
 if [ "$got" != "$expected" ]; then
+	echo "PARAPARAPARA"
 	ERROR "Home directory is not shared?"
 	exit 1
 fi

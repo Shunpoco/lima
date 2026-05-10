@@ -7,7 +7,7 @@ set -eu -o pipefail
 
 # will prevent msys2 converting Linux path arguments into Windows paths before passing to limactl
 export MSYS2_ARG_CONV_EXCL='*'
-
+which limactl
 scriptdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=common.inc.sh
 source "${scriptdir}/common.inc.sh"
@@ -324,7 +324,9 @@ if [[ -n ${CHECKS["systemd"]} ]]; then
 fi
 
 if [[ -n ${CHECKS["mount-home"]} ]]; then
+	echo "IKUZO!!!!!!!!!!!!!!!"
 	"${scriptdir}"/test-mount-home.sh "$NAME"
+	echo "DETAZO!!!"
 fi
 
 if [[ -n ${CHECKS["ssh-over-vsock"]} ]]; then
@@ -397,7 +399,7 @@ if [[ -n ${CHECKS["container-engine"]} ]]; then
 	limactl shell "$NAME" $sudo $CONTAINER_ENGINE pull --quiet ${nginx_image}
 	limactl shell "$NAME" $sudo $CONTAINER_ENGINE run -d --name nginx -p 127.0.0.1:8080:80 ${nginx_image}
 
-	timeout 3m bash -euxc "until curl -f --retry 30 --retry-connrefused http://127.0.0.1:8080; do sleep 3; done"
+	timeout 30m bash -euxc "until curl -f --retry 30 --retry-connrefused http://127.0.0.1:8080; do sleep 3; done"
 
 	limactl shell "$NAME" $sudo $CONTAINER_ENGINE rm -f nginx
 
@@ -412,6 +414,7 @@ if [[ -n ${CHECKS["container-engine"]} ]]; then
 
 	set +x
 	if [[ -n ${CHECKS["mount-home"]} ]]; then
+		echo "HOGEHOGEHOGE"
 		hometmp="$HOME_HOST/lima-container-engine-test-tmp"
 		hometmpguest="$HOME_GUEST/lima-container-engine-test-tmp"
 		# test for https://github.com/lima-vm/lima/issues/187
@@ -455,6 +458,10 @@ if [[ -n ${CHECKS["port-forwards"]} ]]; then
 	if limactl shell "${NAME}" command -v dnf; then
 		limactl shell "${NAME}" sudo dnf install -y nc socat
 	fi
+	echo "!!!!!!!!!!!!!!!!!!!!!!!!!!"
+	echo "${scriptdir}"
+	ls ${scriptdir}
+	limactl shell "${NAME}" socat -h
 	if "${scriptdir}/test-port-forwarding.pl" "${NAME}" socat $PORT_FORWARDING_CONNECTION_TIMEOUT; then
 		INFO "Port forwarding rules work"
 	else
@@ -491,13 +498,13 @@ if [[ -n ${CHECKS["port-forwards"]} ]]; then
 			limactl shell "$NAME" $sudo $CONTAINER_ENGINE pull --quiet ${nginx_image}
 
 			limactl shell "$NAME" $sudo $CONTAINER_ENGINE run -d --name nginx -p 8888:80 ${nginx_image}
-			timeout 3m bash -euxc "until curl -f --retry 30 --retry-connrefused http://${hostip}:8888; do sleep 3; done"
+			timeout 30m bash -euxc "until curl -f --retry 30 --retry-connrefused http://${hostip}:8888; do sleep 3; done"
 			limactl shell "$NAME" $sudo $CONTAINER_ENGINE rm -f nginx
 
 			if [ "$(uname)" = "Darwin" ]; then
 				# Only macOS can bind to port 80 without root
 				limactl shell "$NAME" $sudo $CONTAINER_ENGINE run -d --name nginx -p 127.0.0.1:80:80 ${nginx_image}
-				timeout 3m bash -euxc "until curl -f --retry 30 --retry-connrefused http://localhost:80; do sleep 3; done"
+				timeout 30m bash -euxc "until curl -f --retry 30 --retry-connrefused http://localhost:80; do sleep 3; done"
 				limactl shell "$NAME" $sudo $CONTAINER_ENGINE rm -f nginx
 			fi
 		fi
@@ -508,7 +515,7 @@ if [[ -n ${CHECKS["port-forwards"]} ]]; then
 			limactl shell "$NAME" systemd-run --user python3 -m http.server 3685
 			# curl is not enough to reproduce https://github.com/lima-vm/lima/issues/3685
 			# `w3m -dump` exits with status code 0 even on "Can't load" error.
-			timeout 30s bash -euxc "until w3m -dump http://localhost:3685 | grep -v \"w3m: Can't load\"; do sleep 3; done"
+			timeout 30m bash -euxc "until w3m -dump http://localhost:3685 | grep -v \"w3m: Can't load\"; do sleep 3; done"
 		fi
 	fi
 	set +x

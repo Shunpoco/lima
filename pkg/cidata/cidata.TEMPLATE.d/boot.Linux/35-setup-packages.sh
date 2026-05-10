@@ -5,7 +5,10 @@
 
 set -eux
 
+echo "35 dayo~~~~~~"
+
 update_fuse_conf() {
+	echo "UPDATE FUSE CONF"
 	# Modify /etc/fuse.conf (/etc/fuse3.conf) to allow "-o allow_root"
 	if [ "${LIMA_CIDATA_MOUNTS}" -gt 0 ]; then
 		fuse_conf="/etc/fuse.conf"
@@ -19,6 +22,7 @@ update_fuse_conf() {
 
 	# Some distribution like Ubuntu-25.10 has an apparmor rule for fusermount3. It causes SSHFS mount failed.
 	if [ -e "/etc/apparmor.d/fusermount3" ]; then
+		echo "AAAA"
 		cat > "/etc/apparmor.d/local/fusermount3" << EOF
 mount fstype=@{fuse_types} options=(nosuid,nodev) options in (ro,rw,noatime,dirsync,nodiratime,noexec,sync) -> @{HOME},
 umount @{HOME},
