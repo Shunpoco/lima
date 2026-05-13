@@ -21,9 +21,9 @@ update_fuse_conf() {
 	fi
 
 	# Some distribution like Ubuntu-25.10 has an apparmor rule for fusermount3. It causes SSHFS mount failed.
-	if [ -e "/etc/apparmor.d/fusermount3" ]; then
+	if [ -e "/etc/apparmor.d/fusermount3" -a ! -e "/etc/apparmor.d/local/fusermount3" ]; then
 		echo "AAAA"
-		cat > "/etc/apparmor.d/local/fusermount3" << EOF
+		cat >> "/etc/apparmor.d/local/fusermount3" << EOF
 mount fstype=@{fuse_types} options=(nosuid,nodev) options in (ro,rw,noatime,dirsync,nodiratime,noexec,sync) -> @{HOME},
 umount @{HOME},
 EOF
