@@ -13,7 +13,7 @@ vmType: null
 
 # Arch: "default", "x86_64", "aarch64".
 # 🟢 Builtin default: "default" (corresponds to the host architecture)
-arch: null
+arch: "x86_64"
 
 
 # OpenStack-compatible disk image.
