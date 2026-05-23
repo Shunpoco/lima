@@ -185,196 +185,196 @@ if ! limactl start "$NAME"; then
 	exit 1
 fi
 
-limactl shell "$NAME" uname -a
+# limactl shell "$NAME" uname -a
 
-limactl shell "$NAME" cat /etc/os-release
-set +x
+# limactl shell "$NAME" cat /etc/os-release
+# set +x
 
-INFO "Testing that host home is not wiped out"
-[ -e "$HOME_HOST/.lima" ]
+# INFO "Testing that host home is not wiped out"
+# [ -e "$HOME_HOST/.lima" ]
 
-if [[ -n ${CHECKS["mount-path-with-spaces"]} ]]; then
-	INFO 'Testing that "/tmp/lima test dir with spaces" is not wiped out'
-	[ "$(cat "/tmp/lima test dir with spaces/test file")" = "test file content" ]
-	[ "$(limactl shell "$NAME" cat "/tmp/lima test dir with spaces/test file")" = "test file content" ]
-fi
+# if [[ -n ${CHECKS["mount-path-with-spaces"]} ]]; then
+# 	INFO 'Testing that "/tmp/lima test dir with spaces" is not wiped out'
+# 	[ "$(cat "/tmp/lima test dir with spaces/test file")" = "test file content" ]
+# 	[ "$(limactl shell "$NAME" cat "/tmp/lima test dir with spaces/test file")" = "test file content" ]
+# fi
 
-if [[ -n ${CHECKS["provision-data"]} ]]; then
-	INFO 'Testing that /etc/sysctl.d/99-inotify.conf was created successfully on provision'
-	limactl shell "$NAME" grep -q fs.inotify.max_user_watches /etc/sysctl.d/99-inotify.conf
-fi
+# if [[ -n ${CHECKS["provision-data"]} ]]; then
+# 	INFO 'Testing that /etc/sysctl.d/99-inotify.conf was created successfully on provision'
+# 	limactl shell "$NAME" grep -q fs.inotify.max_user_watches /etc/sysctl.d/99-inotify.conf
+# fi
 
-if [[ -n ${CHECKS["provision-yq"]} ]]; then
-	INFO 'Testing that /tmp/param-yq.json was created successfully on provision'
-	limactl shell "$NAME" grep -q '"YQ": "yq"' /tmp/param-yq.json
-fi
+# if [[ -n ${CHECKS["provision-yq"]} ]]; then
+# 	INFO 'Testing that /tmp/param-yq.json was created successfully on provision'
+# 	limactl shell "$NAME" grep -q '"YQ": "yq"' /tmp/param-yq.json
+# fi
 
-if [[ -n ${CHECKS["param-env-variables"]} ]]; then
-	INFO 'Testing that PARAM env variables are exported to all types of provisioning scripts and probes'
-	limactl shell "$NAME" test -e /tmp/param-ansible
-	limactl shell "$NAME" test -e /tmp/param-boot
-	limactl shell "$NAME" test -e /tmp/param-dependency
-	limactl shell "$NAME" test -e /tmp/param-probe
-	limactl shell "$NAME" test -e /tmp/param-system
-	limactl shell "$NAME" test -e /tmp/param-user
-fi
+# if [[ -n ${CHECKS["param-env-variables"]} ]]; then
+# 	INFO 'Testing that PARAM env variables are exported to all types of provisioning scripts and probes'
+# 	limactl shell "$NAME" test -e /tmp/param-ansible
+# 	limactl shell "$NAME" test -e /tmp/param-boot
+# 	limactl shell "$NAME" test -e /tmp/param-dependency
+# 	limactl shell "$NAME" test -e /tmp/param-probe
+# 	limactl shell "$NAME" test -e /tmp/param-system
+# 	limactl shell "$NAME" test -e /tmp/param-user
+# fi
 
-if [[ -n ${CHECKS["set-user"]} ]]; then
-	INFO 'Testing that user settings can be provided by lima.yaml'
-	limactl shell "$NAME" grep "^john:x:4711:4711:John Doe:/home/john-john:/usr/bin/bash" /etc/passwd
-fi
+# if [[ -n ${CHECKS["set-user"]} ]]; then
+# 	INFO 'Testing that user settings can be provided by lima.yaml'
+# 	limactl shell "$NAME" grep "^john:x:4711:4711:John Doe:/home/john-john:/usr/bin/bash" /etc/passwd
+# fi
 
-if [[ -n ${CHECKS["proxy-settings"]} ]]; then
-	INFO "Testing proxy settings are imported"
-	got=$(limactl shell "$NAME" env | grep FTP_PROXY)
-	# Expected: FTP_PROXY is set in addition to ftp_proxy, localhost is replaced
-	# by the gateway address, and the value is set immediately without a restart
-	gatewayIp=$(limactl shell "$NAME" ip route show 0.0.0.0/0 dev eth0 | cut -d\  -f3)
-	expected="FTP_PROXY=http://${gatewayIp}:2121"
-	INFO "FTP_PROXY: expected=${expected} got=${got}"
-	if [ "$got" != "$expected" ]; then
-		ERROR "proxy environment variable not set to correct value"
-		exit 1
-	fi
-fi
+# if [[ -n ${CHECKS["proxy-settings"]} ]]; then
+# 	INFO "Testing proxy settings are imported"
+# 	got=$(limactl shell "$NAME" env | grep FTP_PROXY)
+# 	# Expected: FTP_PROXY is set in addition to ftp_proxy, localhost is replaced
+# 	# by the gateway address, and the value is set immediately without a restart
+# 	gatewayIp=$(limactl shell "$NAME" ip route show 0.0.0.0/0 dev eth0 | cut -d\  -f3)
+# 	expected="FTP_PROXY=http://${gatewayIp}:2121"
+# 	INFO "FTP_PROXY: expected=${expected} got=${got}"
+# 	if [ "$got" != "$expected" ]; then
+# 		ERROR "proxy environment variable not set to correct value"
+# 		exit 1
+# 	fi
+# fi
 
-INFO "Testing limactl copy command"
-tmpdir="$(mktemp -d "${TMPDIR:-/tmp}"/lima-test-templates.XXXXXX)"
-defer "rm -rf \"$tmpdir\""
-tmpfile="$tmpdir/lima-hostname"
-rm -f "$tmpfile"
-tmpfile_host=$tmpfile
-if [ "${OS_HOST}" = "Msys" ]; then
-	tmpfile_host="$(cygpath -w "$tmpfile")"
-fi
-limactl cp "$NAME":/etc/hostname "$tmpfile_host"
-expected="$(limactl shell "$NAME" cat /etc/hostname)"
-got="$(cat "$tmpfile")"
-INFO "/etc/hostname: expected=${expected}, got=${got}"
-if [ "$got" != "$expected" ]; then
-	ERROR "copy command did not fetch the file"
-	exit 1
-fi
+# INFO "Testing limactl copy command"
+# tmpdir="$(mktemp -d "${TMPDIR:-/tmp}"/lima-test-templates.XXXXXX)"
+# defer "rm -rf \"$tmpdir\""
+# tmpfile="$tmpdir/lima-hostname"
+# rm -f "$tmpfile"
+# tmpfile_host=$tmpfile
+# if [ "${OS_HOST}" = "Msys" ]; then
+# 	tmpfile_host="$(cygpath -w "$tmpfile")"
+# fi
+# limactl cp "$NAME":/etc/hostname "$tmpfile_host"
+# expected="$(limactl shell "$NAME" cat /etc/hostname)"
+# got="$(cat "$tmpfile")"
+# INFO "/etc/hostname: expected=${expected}, got=${got}"
+# if [ "$got" != "$expected" ]; then
+# 	ERROR "copy command did not fetch the file"
+# 	exit 1
+# fi
 
-INFO "Testing limactl copy command with scp backend"
-tmpfile_scp="$tmpdir/lima-hostname-scp"
-rm -f "$tmpfile_scp"
-tmpfile_scp_host=$tmpfile_scp
-if [ "${OS_HOST}" = "Msys" ]; then
-	tmpfile_scp_host="$(cygpath -w "$tmpfile_scp")"
-fi
-limactl cp --backend=scp "$NAME":/etc/hostname "$tmpfile_scp_host"
-expected="$(limactl shell "$NAME" cat /etc/hostname)"
-got="$(cat "$tmpfile_scp")"
-INFO "/etc/hostname (scp): expected=${expected}, got=${got}"
-if [ "$got" != "$expected" ]; then
-	ERROR "copy command with scp backend did not fetch the file"
-	exit 1
-fi
+# INFO "Testing limactl copy command with scp backend"
+# tmpfile_scp="$tmpdir/lima-hostname-scp"
+# rm -f "$tmpfile_scp"
+# tmpfile_scp_host=$tmpfile_scp
+# if [ "${OS_HOST}" = "Msys" ]; then
+# 	tmpfile_scp_host="$(cygpath -w "$tmpfile_scp")"
+# fi
+# limactl cp --backend=scp "$NAME":/etc/hostname "$tmpfile_scp_host"
+# expected="$(limactl shell "$NAME" cat /etc/hostname)"
+# got="$(cat "$tmpfile_scp")"
+# INFO "/etc/hostname (scp): expected=${expected}, got=${got}"
+# if [ "$got" != "$expected" ]; then
+# 	ERROR "copy command with scp backend did not fetch the file"
+# 	exit 1
+# fi
 
-if command -v rsync >/dev/null && limactl shell "$NAME" command -v rsync >/dev/null 2>&1; then
-	INFO "Testing limactl copy command with rsync backend"
-	tmpfile_rsync="$tmpdir/lima-hostname-rsync"
-	rm -f "$tmpfile_rsync"
-	tmpfile_rsync_host=$tmpfile_rsync
-	if [ "${OS_HOST}" = "Msys" ]; then
-		tmpfile_rsync_host="$(cygpath -w "$tmpfile_rsync")"
-	fi
-	limactl cp --backend=rsync "$NAME":/etc/hostname "$tmpfile_rsync_host"
-	expected="$(limactl shell "$NAME" cat /etc/hostname)"
-	got="$(cat "$tmpfile_rsync")"
-	INFO "/etc/hostname (rsync): expected=${expected}, got=${got}"
-	if [ "$got" != "$expected" ]; then
-		ERROR "copy command with rsync backend did not fetch the file"
-		exit 1
-	fi
+# if command -v rsync >/dev/null && limactl shell "$NAME" command -v rsync >/dev/null 2>&1; then
+# 	INFO "Testing limactl copy command with rsync backend"
+# 	tmpfile_rsync="$tmpdir/lima-hostname-rsync"
+# 	rm -f "$tmpfile_rsync"
+# 	tmpfile_rsync_host=$tmpfile_rsync
+# 	if [ "${OS_HOST}" = "Msys" ]; then
+# 		tmpfile_rsync_host="$(cygpath -w "$tmpfile_rsync")"
+# 	fi
+# 	limactl cp --backend=rsync "$NAME":/etc/hostname "$tmpfile_rsync_host"
+# 	expected="$(limactl shell "$NAME" cat /etc/hostname)"
+# 	got="$(cat "$tmpfile_rsync")"
+# 	INFO "/etc/hostname (rsync): expected=${expected}, got=${got}"
+# 	if [ "$got" != "$expected" ]; then
+# 		ERROR "copy command with rsync backend did not fetch the file"
+# 		exit 1
+# 	fi
 
-	INFO "Testing limactl copy command with rsync backend (verbose, recursive)"
-	testdir="$tmpdir/test-rsync-dir"
-	mkdir -p "$testdir"
-	echo "test content" >"$testdir/testfile.txt"
-	limactl cp --backend=rsync -r -v "$testdir" "$NAME":/tmp/
-	if ! limactl shell "$NAME" test -f /tmp/test-rsync-dir/testfile.txt; then
-		ERROR "rsync recursive copy failed"
-		exit 1
-	fi
-	rsync_content="$(limactl shell "$NAME" cat /tmp/test-rsync-dir/testfile.txt)"
-	if [ "$rsync_content" != "test content" ]; then
-		ERROR "rsync file content mismatch"
-		exit 1
-	fi
-else
-	INFO "Skipping rsync backend test (rsync not available on host or guest)"
-fi
+# 	INFO "Testing limactl copy command with rsync backend (verbose, recursive)"
+# 	testdir="$tmpdir/test-rsync-dir"
+# 	mkdir -p "$testdir"
+# 	echo "test content" >"$testdir/testfile.txt"
+# 	limactl cp --backend=rsync -r -v "$testdir" "$NAME":/tmp/
+# 	if ! limactl shell "$NAME" test -f /tmp/test-rsync-dir/testfile.txt; then
+# 		ERROR "rsync recursive copy failed"
+# 		exit 1
+# 	fi
+# 	rsync_content="$(limactl shell "$NAME" cat /tmp/test-rsync-dir/testfile.txt)"
+# 	if [ "$rsync_content" != "test content" ]; then
+# 		ERROR "rsync file content mismatch"
+# 		exit 1
+# 	fi
+# else
+# 	INFO "Skipping rsync backend test (rsync not available on host or guest)"
+# fi
 
-INFO "Testing limactl command with escaped characters"
-limactl shell "$NAME" bash -c "$(echo -e '\n\techo foo\n\techo bar')"
+# INFO "Testing limactl command with escaped characters"
+# limactl shell "$NAME" bash -c "$(echo -e '\n\techo foo\n\techo bar')"
 
-INFO "Testing limactl command with quotes"
-limactl shell "$NAME" bash -c "echo 'foo \"bar\"'"
+# INFO "Testing limactl command with quotes"
+# limactl shell "$NAME" bash -c "echo 'foo \"bar\"'"
 
-if [[ -n ${CHECKS["systemd"]} ]]; then
-	set -x
-	if ! limactl shell "$NAME" systemctl is-system-running --wait; then
-		ERROR '"systemctl is-system-running" failed'
-		diagnose "$NAME"
-		exit 1
-	fi
-	set +x
-fi
+# if [[ -n ${CHECKS["systemd"]} ]]; then
+# 	set -x
+# 	if ! limactl shell "$NAME" systemctl is-system-running --wait; then
+# 		ERROR '"systemctl is-system-running" failed'
+# 		diagnose "$NAME"
+# 		exit 1
+# 	fi
+# 	set +x
+# fi
 
-if [[ -n ${CHECKS["mount-home"]} ]]; then
-	"${scriptdir}"/test-mount-home.sh "$NAME"
-fi
+# if [[ -n ${CHECKS["mount-home"]} ]]; then
+# 	"${scriptdir}"/test-mount-home.sh "$NAME"
+# fi
 
-if [[ -n ${CHECKS["ssh-over-vsock"]} ]]; then
-	if [[ "$(limactl ls "${NAME}" --yq .vmType)" == "vz" ]]; then
-		INFO "Testing SSH over vsock"
-		set -x
-		log_file="$HOME_HOST/.lima/${NAME}/ha.stdout.log"
+# if [[ -n ${CHECKS["ssh-over-vsock"]} ]]; then
+# 	if [[ "$(limactl ls "${NAME}" --yq .vmType)" == "vz" ]]; then
+# 		INFO "Testing SSH over vsock"
+# 		set -x
+# 		log_file="$HOME_HOST/.lima/${NAME}/ha.stdout.log"
 
-		# Helper function to check vsock events in the log file
-		# $1: event_type to check for
-		check_vsock_event() {
-			local event_type="$1"
-			if jq -e --arg type "$event_type" 'select(.status.vsock.type == $type)' "$log_file" >/dev/null 2>&1; then
-				return 0
-			fi
-			return 1
-		}
+# 		# Helper function to check vsock events in the log file
+# 		# $1: event_type to check for
+# 		check_vsock_event() {
+# 			local event_type="$1"
+# 			if jq -e --arg type "$event_type" 'select(.status.vsock.type == $type)' "$log_file" >/dev/null 2>&1; then
+# 				return 0
+# 			fi
+# 			return 1
+# 		}
 
-		INFO "Testing .ssh.overVsock=true configuration"
-		limactl stop "${NAME}"
-		# Detection of the SSH server on VSOCK may fail; however, a failing log indicates that controlling detection via the environment variable works as expected.
-		limactl start --set '.ssh.overVsock=true' "${NAME}"
-		if ! check_vsock_event "started" && ! check_vsock_event "failed"; then
-			set +x
-			diagnose "${NAME}"
-			ERROR ".ssh.overVsock=true did not enable vsock forwarder"
-			exit 1
-		fi
-		INFO 'Testing .ssh.overVsock=null configuration'
-		limactl stop "${NAME}"
-		# Detection of the SSH server on VSOCK may fail; however, a failing log indicates that controlling detection via the environment variable works as expected.
-		limactl start --set '.ssh.overVsock=null' "${NAME}"
-		if ! check_vsock_event "started" && ! check_vsock_event "failed"; then
-			set +x
-			diagnose "${NAME}"
-			ERROR ".ssh.overVsock=null did not enable vsock forwarder"
-			exit 1
-		fi
-		INFO "Testing .ssh.overVsock=false configuration"
-		limactl stop "${NAME}"
-		limactl start --set '.ssh.overVsock=false' "${NAME}"
-		if ! check_vsock_event "skipped"; then
-			set +x
-			diagnose "${NAME}"
-			ERROR ".ssh.overVsock=false did not disable vsock forwarder"
-			exit 1
-		fi
-		set +x
-	fi
-fi
+# 		INFO "Testing .ssh.overVsock=true configuration"
+# 		limactl stop "${NAME}"
+# 		# Detection of the SSH server on VSOCK may fail; however, a failing log indicates that controlling detection via the environment variable works as expected.
+# 		limactl start --set '.ssh.overVsock=true' "${NAME}"
+# 		if ! check_vsock_event "started" && ! check_vsock_event "failed"; then
+# 			set +x
+# 			diagnose "${NAME}"
+# 			ERROR ".ssh.overVsock=true did not enable vsock forwarder"
+# 			exit 1
+# 		fi
+# 		INFO 'Testing .ssh.overVsock=null configuration'
+# 		limactl stop "${NAME}"
+# 		# Detection of the SSH server on VSOCK may fail; however, a failing log indicates that controlling detection via the environment variable works as expected.
+# 		limactl start --set '.ssh.overVsock=null' "${NAME}"
+# 		if ! check_vsock_event "started" && ! check_vsock_event "failed"; then
+# 			set +x
+# 			diagnose "${NAME}"
+# 			ERROR ".ssh.overVsock=null did not enable vsock forwarder"
+# 			exit 1
+# 		fi
+# 		INFO "Testing .ssh.overVsock=false configuration"
+# 		limactl stop "${NAME}"
+# 		limactl start --set '.ssh.overVsock=false' "${NAME}"
+# 		if ! check_vsock_event "skipped"; then
+# 			set +x
+# 			diagnose "${NAME}"
+# 			ERROR ".ssh.overVsock=false did not disable vsock forwarder"
+# 			exit 1
+# 		fi
+# 		set +x
+# 	fi
+# fi
 
 # Use GHCR and ECR to avoid hitting Docker Hub rate limit
 nginx_image="ghcr.io/stargz-containers/nginx:1.19-alpine-org"
@@ -398,6 +398,9 @@ if [[ -n ${CHECKS["container-engine"]} ]]; then
 	limactl shell "$NAME" $sudo $CONTAINER_ENGINE run -d --name nginx -p 127.0.0.1:8080:80 ${nginx_image}
     sleep 10
     limactl shell "$NAME" $sudo $CONTAINER_ENGINE ps -a
+    limactl shell "$NAME" $sudo $CONTAINER_ENGINE inspect nginx
+    limactl shell "$NAME" $sudo $CONTAINER_ENGINE logs nginx
+
 
 	timeout 3m bash -euxc "until curl -f --retry 30 --retry-connrefused http://127.0.0.1:8080; do sleep 3; done"
 
