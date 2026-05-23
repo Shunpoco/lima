@@ -402,7 +402,7 @@ if [[ -n ${CHECKS["container-engine"]} ]]; then
     limactl shell "$NAME" $sudo $CONTAINER_ENGINE logs nginx
 
 
-	timeout 3m bash -euxc "until curl -f --retry 30 --retry-connrefused http://127.0.0.1:8080; do sleep 3; done"
+	timeout 1m bash -euxc "until curl -f --retry 30 --retry-connrefused http://127.0.0.1:8080; do sleep 3; done"
 
 	limactl shell "$NAME" $sudo $CONTAINER_ENGINE rm -f nginx
 
