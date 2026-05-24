@@ -410,8 +410,8 @@ if [[ -n ${CHECKS["container-engine"]} ]]; then
     limactl shell --debug "$NAME" $sudo $CONTAINER_ENGINE --debug-full logs nginx
     limactl shell --debug "$NAME" $sudo $CONTAINER_ENGINE --debug-full inspect nginx
 
-    limactl cp --backend=rsync -r -v ./hoge.sh "$NAME":/Users/runner/
-    limactl shell --debug "$NAME" /Users/runner/hoge.sh
+    limactl cp --backend=rsync -r -v ./hoge.sh "$NAME":/tmp/
+    limactl shell --debug "$NAME" /tmp/hoge.sh
 
     limactl shell --debug "$NAME" $sudo $CONTAINER_ENGINE --debug-full ps -a
 
