@@ -400,6 +400,8 @@ if [[ -n ${CHECKS["container-engine"]} ]]; then
 	limactl shell "$NAME" $sudo $CONTAINER_ENGINE pull --quiet ${nginx_image}
 	limactl shell "$NAME" $sudo $CONTAINER_ENGINE run -d --name nginx -p 127.0.0.1:8080:80 ${nginx_image}
     limactl shell "$NAME" $sudo $CONTAINER_ENGINE ps -a
+	limactl shell "$NAME" $sudo $CONTAINER_ENGINE start nginx
+    limactl shell "$NAME" $sudo $CONTAINER_ENGINE ps -a
 	limactl shell "$NAME" $sudo $CONTAINER_ENGINE run -d --name nginx2 ${nginx_image}
     limactl shell "$NAME" $sudo $CONTAINER_ENGINE ps -a
 	limactl shell "$NAME" sudo $CONTAINER_ENGINE run -d --name nginx3 -p 127.0.0.1:8082:80 ${nginx_image}
