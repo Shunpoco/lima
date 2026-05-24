@@ -394,21 +394,21 @@ if [[ -n ${CHECKS["container-engine"]} ]]; then
 		ERROR "\"${CONTAINER_ENGINE} info\" failed"
 		exit 1
 	fi
-    # limactl shell "$NAME" sudo lsof -i:8080
-    # limactl shell "$NAME" sudo lsof -i:8081
+    limactl shell "$NAME" cat /var/log/cloud-init-output.log
     limactl shell "$NAME" sudo /usr/local/bin/containerd --version
-	limactl shell "$NAME" $sudo $CONTAINER_ENGINE pull --quiet ${nginx_image}
-	limactl shell "$NAME" $sudo $CONTAINER_ENGINE run -d --name nginx -p 127.0.0.1:8080:80 ${nginx_image}
-    limactl shell "$NAME" $sudo $CONTAINER_ENGINE ps -a
-	limactl shell "$NAME" $sudo $CONTAINER_ENGINE start nginx
-    limactl shell "$NAME" $sudo $CONTAINER_ENGINE ps -a
-	limactl shell "$NAME" $sudo $CONTAINER_ENGINE run -d --name nginx2 ${nginx_image}
-    limactl shell "$NAME" $sudo $CONTAINER_ENGINE ps -a
-	limactl shell "$NAME" sudo $CONTAINER_ENGINE run -d --name nginx3 -p 127.0.0.1:8082:80 ${nginx_image}
+	limactl shell "$NAME" $sudo $CONTAINER_ENGINE --debug-full pull --quiet ${nginx_image}
+	limactl shell "$NAME" $sudo $CONTAINER_ENGINE --debug-full run -d --name nginx -p 127.0.0.1:8080:80 ${nginx_image}
     sleep 10
-    limactl shell "$NAME" $sudo $CONTAINER_ENGINE ps -a
-    limactl shell "$NAME" $sudo $CONTAINER_ENGINE inspect nginx
-    limactl shell "$NAME" $sudo $CONTAINER_ENGINE logs nginx
+    limactl shell "$NAME" $sudo $CONTAINER_ENGINE --debug-full logs nginx
+
+
+    limactl shell "$NAME" $sudo $CONTAINER_ENGINE --debug-full ps -a
+	limactl shell "$NAME" $sudo $CONTAINER_ENGINE --debug-full start nginx
+    limactl shell "$NAME" $sudo $CONTAINER_ENGINE --debug-full ps -a
+	limactl shell "$NAME" $sudo $CONTAINER_ENGINE --debug-full run -d --name nginx2 -p 127.0.0.1:8081:80 ${nginx_image}
+    limactl shell "$NAME" $sudo $CONTAINER_ENGINE --debug-full ps -a
+    limactl shell "$NAME" $sudo $CONTAINER_ENGINE --debug-full logs nginx
+    limactl shell "$NAME" $sudo $CONTAINER_ENGINE --debug-full inspect nginx
 
 
 	timeout 1m bash -euxc "until curl -f --retry 30 --retry-connrefused http://127.0.0.1:8080; do sleep 3; done"
