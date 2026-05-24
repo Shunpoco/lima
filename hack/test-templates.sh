@@ -398,17 +398,17 @@ if [[ -n ${CHECKS["container-engine"]} ]]; then
     # limactl shell "$NAME" sudo lsof -i:8081
     limactl shell "$NAME" sudo /usr/local/bin/containerd --version
 	limactl shell "$NAME" $sudo $CONTAINER_ENGINE pull --quiet ${nginx_image}
-	limactl shell "$NAME" $sudo $CONTAINER_ENGINE run --name nginx -p 127.0.0.1:8080:80 ${nginx_image}
+	limactl shell "$NAME" $sudo $CONTAINER_ENGINE run -d --name nginx -p 127.0.0.1:8080:80 ${nginx_image}
     limactl shell "$NAME" $sudo $CONTAINER_ENGINE ps -a
 	limactl shell "$NAME" $sudo $CONTAINER_ENGINE start nginx
     limactl shell "$NAME" $sudo $CONTAINER_ENGINE ps -a
-	# limactl shell "$NAME" $sudo $CONTAINER_ENGINE run -d --name nginx2 ${nginx_image}
-    # limactl shell "$NAME" $sudo $CONTAINER_ENGINE ps -a
-	# limactl shell "$NAME" sudo $CONTAINER_ENGINE run -d --name nginx3 -p 127.0.0.1:8082:80 ${nginx_image}
-    # sleep 10
-    # limactl shell "$NAME" $sudo $CONTAINER_ENGINE ps -a
-    # limactl shell "$NAME" $sudo $CONTAINER_ENGINE inspect nginx
-    # limactl shell "$NAME" $sudo $CONTAINER_ENGINE logs nginx
+	limactl shell "$NAME" $sudo $CONTAINER_ENGINE run -d --name nginx2 ${nginx_image}
+    limactl shell "$NAME" $sudo $CONTAINER_ENGINE ps -a
+	limactl shell "$NAME" sudo $CONTAINER_ENGINE run -d --name nginx3 -p 127.0.0.1:8082:80 ${nginx_image}
+    sleep 10
+    limactl shell "$NAME" $sudo $CONTAINER_ENGINE ps -a
+    limactl shell "$NAME" $sudo $CONTAINER_ENGINE inspect nginx
+    limactl shell "$NAME" $sudo $CONTAINER_ENGINE logs nginx
 
 
 	timeout 1m bash -euxc "until curl -f --retry 30 --retry-connrefused http://127.0.0.1:8080; do sleep 3; done"
