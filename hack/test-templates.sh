@@ -410,6 +410,10 @@ if [[ -n ${CHECKS["container-engine"]} ]]; then
     limactl shell --debug "$NAME" $sudo $CONTAINER_ENGINE --debug-full logs nginx
     limactl shell --debug "$NAME" $sudo $CONTAINER_ENGINE --debug-full inspect nginx
 
+    limactl cp --backend=rsync -r -v ./hoge.sh "$NAME":/Users/runner/
+    limactl shell --debug "$NAME" /Users/runner/hoge.sh
+
+    limactl shell --debug "$NAME" $sudo $CONTAINER_ENGINE --debug-full ps -a
 
 	timeout 1m bash -euxc "until curl -f --retry 30 --retry-connrefused http://127.0.0.1:8080; do sleep 3; done"
 
