@@ -55,6 +55,8 @@ if [ "${LIMA_CIDATA_CONTAINERD_SYSTEM}" = 1 ]; then
     [proxy_plugins."stargz"]
       type = "snapshot"
       address = "/run/containerd-stargz-grpc/containerd-stargz-grpc.sock"
+  [debug]
+    level = "debug"
 EOF
 	fi
 	if [ ! -e /etc/buildkit/buildkitd.toml ]; then
@@ -86,6 +88,8 @@ if [ "${LIMA_CIDATA_CONTAINERD_USER}" = 1 ]; then
     [proxy_plugins."stargz"]
       type = "snapshot"
       address = "/run/user/${LIMA_CIDATA_UID}/containerd-stargz-grpc/containerd-stargz-grpc.sock"
+  [debug]
+    level = "debug"
 EOF
 		chown -R "${LIMA_CIDATA_USER}" "${LIMA_CIDATA_HOME}/.config"
 	fi

@@ -396,12 +396,14 @@ if [[ -n ${CHECKS["container-engine"]} ]]; then
 	fi
     limactl shell "$NAME" sudo cat /var/log/cloud-init-output.log
     limactl shell "$NAME" sudo /usr/local/bin/containerd --version
-    limactl shell "$NAME" systemctl --user start containerd.service
+    limactl shell "$NAME" systemctl --user status containerd.service
 	limactl shell "$NAME" $sudo $CONTAINER_ENGINE --debug-full pull --quiet ${nginx_image}
 	limactl shell --debug "$NAME" $sudo $CONTAINER_ENGINE run -d --name nginx -p 127.0.0.1:8080:80 ${nginx_image}
     sleep 10
     limactl shell --debug "$NAME" $sudo $CONTAINER_ENGINE  logs nginx
 
+    limactl cp --backend=rsync -r -v ./hoge.sh "$NAME":/tmp/
+    limactl shell --debug "$NAME" /tmp/hoge.sh
 
     limactl shell --debug "$NAME" $sudo $CONTAINER_ENGINE  ps -a
 	limactl shell --debug "$NAME" $sudo $CONTAINER_ENGINE  start nginx
@@ -410,9 +412,6 @@ if [[ -n ${CHECKS["container-engine"]} ]]; then
     limactl shell --debug "$NAME" $sudo $CONTAINER_ENGINE --debug-full ps -a
     limactl shell --debug "$NAME" $sudo $CONTAINER_ENGINE --debug-full logs nginx
     limactl shell --debug "$NAME" $sudo $CONTAINER_ENGINE --debug-full inspect nginx
-
-    limactl cp --backend=rsync -r -v ./hoge.sh "$NAME":/tmp/
-    limactl shell --debug "$NAME" /tmp/hoge.sh
 
     limactl shell --debug "$NAME" $sudo $CONTAINER_ENGINE --debug-full ps -a
 
