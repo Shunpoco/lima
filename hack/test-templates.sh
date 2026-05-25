@@ -377,7 +377,8 @@ fi
 # fi
 
 # Use GHCR and ECR to avoid hitting Docker Hub rate limit
-nginx_image="ghcr.io/stargz-containers/nginx:1.19-alpine-org"
+# nginx_image="ghcr.io/stargz-containers/nginx:1.19-alpine-org"
+nginx_image="nginx:stable-alpine3.23-perl"
 alpine_image="ghcr.io/containerd/alpine:3.14.0"
 coredns_image="public.ecr.aws/eks-distro/coredns/coredns:v1.12.2-eks-1-31-latest"
 
