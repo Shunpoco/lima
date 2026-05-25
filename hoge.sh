@@ -15,7 +15,9 @@ systemctl --user status containerd
 
 
 # nerdctl rm nginx
-nerdctl run -d --name nginx -p 127.0.0.1:8080:80 ghcr.io/stargz-containers/nginx:1.19-alpine-org
+# nerdctl run -d --name nginx -p 127.0.0.1:8080:80 ghcr.io/stargz-containers/nginx:1.19-alpine-org
+nerdctl run -d --name nginx -p 127.0.0.1:8080:80 nginx:stable-alpine3.23-perl
+
 # nerdctl ps -a
 sleep 10
 
