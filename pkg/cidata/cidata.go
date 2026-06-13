@@ -4,6 +4,7 @@
 package cidata
 
 import (
+	"bytes"
 	"compress/gzip"
 	"context"
 	"errors"
@@ -594,6 +595,17 @@ func GenerateWindowsISO(ctx context.Context, drv driver.Driver, instDir, name st
 	layout = append(layout, iso9660util.Entry{
 		Path:   "ssh_authorized_keys",
 		Reader: strings.NewReader(strings.Join(args.SSHPubKeys, "\n")),
+	})
+
+	layout = append(layout, iso9660util.Entry{
+		Path: "startup.nsh",
+		Reader: bytes.NewReader([]byte("@echo -off\r\n" +
+			"echo Searching for Windows Boot Manager...\r\n" +
+			"FS0:\\EFI\\BOOT\\BOOTX64.EFI\r\n" +
+			"FS1:\\EFI\\BOOT\\BOOTX64.EFI\r\n" +
+			"FS2:\\EFI\\BOOT\\BOOTX64.EFI\r\n" +
+			"FS3:\\EFI\\BOOT\\BOOTX64.EFI\r\n" +
+			"FS4:\\EFI\\BOOT\\BOOTX64.EFI\r\n")),
 	})
 
 	return args.IID, iso9660util.Write(filepath.Join(instDir, filenames.CIDataISO), "autounattend", layout, iso9660util.WithJoliet())
