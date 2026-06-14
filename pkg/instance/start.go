@@ -21,7 +21,6 @@ import (
 
 	"github.com/lima-vm/lima/v2/pkg/autostart"
 	"github.com/lima-vm/lima/v2/pkg/cacheutil"
-	"github.com/lima-vm/lima/v2/pkg/downloader"
 	"github.com/lima-vm/lima/v2/pkg/driver"
 	"github.com/lima-vm/lima/v2/pkg/driverutil"
 	"github.com/lima-vm/lima/v2/pkg/executil"
@@ -129,8 +128,12 @@ func Prepare(ctx context.Context, inst *limatype.Instance, guestAgent string) (*
 	}
 
 	if *inst.Config.OS == limatype.WINDOWS && inst.Config.VirtioWin != nil {
+		f := limatype.File{
+			Location: *inst.Config.VirtioWin,
+			Arch:     limatype.AARCH64,
+		}
 		virtioWin := filepath.Join(inst.Dir, filenames.VirtioWin)
-		if _, err := downloader.Download(ctx, virtioWin, *inst.Config.VirtioWin); err != nil {
+		if _, err := fileutils.DownloadFile(ctx, virtioWin, f, false, "virtio-win", *inst.Config.Arch); err != nil {
 			return nil, err
 		}
 	}
